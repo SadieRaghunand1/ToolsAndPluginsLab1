@@ -1,8 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
-using Unity.VisualScripting;
 using UnityEditor;
-using UnityEditor.TerrainTools;
 using UnityEngine;
 
 public class ChessPieceGizmos : MonoBehaviour
@@ -18,15 +16,7 @@ public class ChessPieceGizmos : MonoBehaviour
         King
     }
 
-  /*  [System.Serializable]
-    public struct ChessPieceData
-    {
-        public ChessPiece piece;
-        public Texture2D icon;
-    }
-  */
     public ChessPiece piece;
-    //public ChessPieceData pieceData;
     public float lookRadius = 0.5f;
 
 
@@ -37,39 +27,40 @@ public class ChessPieceGizmos : MonoBehaviour
     [SerializeField] private Texture2D queenIcon;
     [SerializeField] private Texture2D kingIcon;
 
-    [SerializeField] bool black = true;
+    Texture2D currentIcon;
 
     void OnDrawGizmos()
     {
 #if UNITY_EDITOR
 
-      //  Gizmos.DrawIcon(transform.position, AssetDatabase.GetAssetPath(pieceData.icon), true);
-
-
+     
+        //Use type of chess piece to display proper icon, save as current icon
         switch (piece)
         {
 
             case ChessPiece.Pawn:
-                if(black)
-                {
-                    Gizmos.color = Color.black;
-                }
                 Gizmos.DrawIcon(transform.position, AssetDatabase.GetAssetPath(pawnIcon), true);
+                currentIcon = pawnIcon;
                 break;
             case ChessPiece.Rook:
                 Gizmos.DrawIcon(transform.position, AssetDatabase.GetAssetPath(rookIcon), true);
+                currentIcon = rookIcon;
                 break;
             case ChessPiece.Knight:
                 Gizmos.DrawIcon(transform.position, AssetDatabase.GetAssetPath(knightIcon), true);
+                currentIcon = knightIcon;
                 break;
             case ChessPiece.Bishop:
                 Gizmos.DrawIcon(transform.position, AssetDatabase.GetAssetPath(bishopIcon), true);
+                currentIcon = bishopIcon;   
                 break;
             case ChessPiece.Queen:
                 Gizmos.DrawIcon(transform.position, AssetDatabase.GetAssetPath(queenIcon), true);
+                currentIcon = queenIcon;
                 break;
             case ChessPiece.King:
                 Gizmos.DrawIcon(transform.position, AssetDatabase.GetAssetPath(kingIcon), true);
+                currentIcon = kingIcon;
                 break;
         }
 
@@ -79,22 +70,20 @@ public class ChessPieceGizmos : MonoBehaviour
     void OnDrawGizmosSelected()
     {
 #if UNITY_EDITOR
-       /* Handles.color = Color.yellow;
-        Handles.DrawWireDisc(transform.position + Vector3.back * 0.01f, Vector3.forward, lookRadius);
-       */
+
         CheckType(piece, this.gameObject);
         Gizmos.color = Color.blue;
 #endif
     }
 
-#if UNITY_EDITOR
-    public void OnSceneGUI()
-    {
-
-    }
-#endif
+    /// <summary>
+    /// Check the type of the chess piece, add gizmos to show where the piece can move
+    /// </summary>
+    /// <param name="_chessType">Type of chess piece</param>
+    /// <param name="_chessPiece">GameObject this script is attached to</param>
     void CheckType(ChessPiece _chessType, GameObject _chessPiece)
     {
+        //Change gizmos based on type of piece
         switch(_chessType)
         {
             case ChessPiece.Pawn:
@@ -241,10 +230,12 @@ public class ChessPieceGizmos : MonoBehaviour
                 }
                 break;
         }
-    }
+    } //END CheckType()
+
 }
 
 
+//Force handle to be on top of board gizmo
 [CustomEditor(typeof(ChessPieceGizmos))]
 public class ManageHandles: Editor
 {
@@ -256,3 +247,5 @@ public class ManageHandles: Editor
         Handles.DrawWireDisc(myObj.transform.position + Vector3.back * 0.01f, Vector3.forward, myObj.lookRadius);
     }
 }
+
+
