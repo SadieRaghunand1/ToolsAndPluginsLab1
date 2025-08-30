@@ -7,6 +7,7 @@ public class GizmosExample : MonoBehaviour
     public int num = 0;
     public int num2 = 0;
     public bool done = false;
+
     void OnDrawGizmos()
     {
 
@@ -20,14 +21,14 @@ public class GizmosExample : MonoBehaviour
         for (int i = 0; i < 64; i++)
         {
 
-            if (num > 8)
+            if (num >= 8)
             {
                 num2++;
                 num = 0;
             }
 
 
-            if (i % 2 == 0)
+            if ((num + num2) % 2 == 0)
             {
                 Gizmos.color = new Color(1.0f, 1.0f, 1.0f);
             }
@@ -38,13 +39,13 @@ public class GizmosExample : MonoBehaviour
 
             Gizmos.matrix = transform.localToWorldMatrix;
             Gizmos.DrawCube(new Vector3(num, num2, 0), Vector3.one);
-            num += 1;
+            num++;
             if (i == 63)
-                {
-                    num = 0;
-                    num2 = 0;
-                }
+            {
+                num = 0;
+                num2 = 0;
             }
-        
+        }
+
     }
 }
